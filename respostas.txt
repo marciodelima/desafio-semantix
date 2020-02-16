@@ -1,0 +1,80 @@
+1) Qual​ ​ o ​ ​ objetivo​ ​ do​ ​ comando​ ​ cache​ ​ em​ ​ Spark?
+Resposta: Faz a persistência de um RDD na memória do cluster Spark com o objetivo de performance, pois cada ação no RDD gera um novo processo de computação dos dados. Os dados do RDD em cache evita esse processo.
+
+2) ​O mesmo​ ​ código​ ​ implementado​ ​ em​ ​ Spark​ ​ é ​ ​ normalmente​ ​ mais​ ​ rápido​ ​ que​ ​ a ​ ​ implementação​ ​ equivalente​ ​ em
+MapReduce.​ ​ Por​ ​ quê?
+Resposta: O Spark trabalha e processa os dados em memória. Trabalhando em memória ele é 100x mais rápido que o MapReduce, pois o mesmo trabalha todos os seus processos de mapeamento, shuffte e reduce em disco hdfs. O Spark trabalha em disco quando a memória é insuficiente, mesmo assim, ele é 10x mais rápido em disco do que o MapReduce. 
+
+3) Qual​ ​ é ​ ​ a ​ ​ função​ ​ do​ ​ SparkContext​ ?
+Resposta: O SparkContext​ é o responsável pela comunicação com o cluster Spark, é através dele que podemos criar os RDDs, variáveis acumuladoras e de broadcast e persistir os RDDs em cache.  
+
+4) Explique​ ​ com​ ​ suas​ ​ palavras​ ​ ​ o ​ ​ que​ ​ é ​ ​ Resilient​ ​ Distributed​ ​ Datasets​​ ​ (RDD).
+Resposta: É um dataset imutável em memória que pode ser particionado e processado em paralelo no cluster Spark. 
+
+5) GroupByKey​ ​ é ​ ​ menos​ ​ eficiente​ ​ que​ ​ reduceByKey​ ​ em​ ​ grandes​ ​ dataset.​ ​ Por​ ​ quê?
+O reduceByKey já faz a redução e contagem na mesma partição e depois envia esse resultado para a próxima e assim vai fazendo até a última partição. O groupByKey não faz a redução e contagem, ele envia os dados entre as partições, até a última e na última ele faz a redução e contagem, provocando perda de performance, além de overhead de tráfego na rede, pois chegam centenas de dados de chave e valor para serem processados numa mesma partição.  
+
+6) Explique​ ​ o ​ ​ que​ ​ o ​ ​ código​ ​ Scala​ ​ abaixo​ ​ faz.
+
+val​​ ​ textFile​​ = sc​.textFile​ ( ​ "hdfs://..."​ )
+val​​ ​ counts​​ = textFile​.flatMap​ ( ​ line​​ ​ =>​​ ​ line​.split​ ( ​ " ​ ​ " ​ ))
+​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ .map​ ( ​ word​​ ​ =>​​ ​ ( ​ word​ , ​ ​ 1 ​ ))5) 
+​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ ​ .reduceByKey​ ( ​ _ ​ ​ + ​ ​ _ ​ )
+counts​.saveAsTextFile​ ( ​ "hdfs://..."​ )
+
+Resposta: 
+a) Esse código lê um arquivo do HDFS;
+b) Faz a leitura de cada linha do arquivo e o divide por palavras separadas por espaço; 
+c) Após isso, mapea cada palavra como chave e atribui o valor de 1;
+d) Faz a redução e contagem das palavras (Soma +1 para cada chave); 
+e) Após isso, salva no HDFS os resultados como arquivo texto. 
+
+=========================================================================================================================
+
+Questões
+​Responda as seguintes questões devem ser desenvolvidas em Spark utilizando a  sua linguagem de preferência.
+
+1. Número de hosts únicos. => 137979 hosts.
+
+2. O total de erros 404 => 20698 erros.
+
+3. Os 5  URLs que mais causaram erro 404. Abaixo: 
+
+[Row(url='/pub/winvn/readme.txt', resultado=2004),
+ Row(url='/pub/winvn/release.txt', resultado=1732),
+ Row(url='/shuttle/missions/STS-69/mission-STS-69.html', resultado=682),
+ Row(url='/shuttle/missions/sts-68/ksc-upclose.gif', resultado=426),
+ Row(url='/history/apollo/a-001/a-001-patch-small.gif', resultado=384)]
+
+4. Quantidade de erros 404 por dia. Abaixo: 
+
++------+---------+
+|  Data|resultado|
++------+---------+
+|01/Aug|      242|
+|01/Jul|      315|
+|02/Jul|      291|
+|03/Aug|      300|
+|03/Jul|      473|
+|04/Aug|      343|
+|04/Jul|      355|
+|05/Aug|      232|
+|05/Jul|      492|
+|06/Aug|      371|
+|06/Jul|      633|
+|07/Aug|      526|
+|07/Jul|      568|
+|08/Aug|      386|
+|08/Jul|      302|
+|09/Aug|      277|
+|09/Jul|      342|
+|10/Aug|      312|
+|10/Jul|      392|
+|11/Aug|      260|
++------+---------+
+only showing top 20 rows
+
+5. O total de bytes retornados => 65401233313 bytes
+
+
+
